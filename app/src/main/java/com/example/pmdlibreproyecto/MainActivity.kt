@@ -82,17 +82,19 @@ fun RPScreen() {
     ) {
         Text("Piedra, Papel o Tijera", fontSize = 28.sp)
 
-        // Marcador
-        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Jugador")
-                Text("$playerScore", fontSize = 24.sp)
+                Text("Jugador", fontSize = 16.sp)
+                Text(playerMove?.emoji ?: "-", fontSize = 48.sp)
+                Text(playerMove?.label ?: "")
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("CPU")
-                Text("$cpuScore", fontSize = 24.sp)
+                Text("CPU", fontSize = 16.sp)
+                Text(cpuMove?.emoji ?: "-", fontSize = 48.sp)
+                Text(cpuMove?.label ?: "")
             }
         }
+
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Elige tu jugada:")
