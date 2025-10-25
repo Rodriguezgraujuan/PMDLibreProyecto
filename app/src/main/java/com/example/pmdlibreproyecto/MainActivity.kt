@@ -47,20 +47,29 @@ fun determineWinner(player: Move, cpu: Move): String {
         Move.SCISSORS -> if (cpu == Move.PAPER) "Ganas" else "Pierdes"
     }
 }
-
 @Composable
 fun RPScreen() {
     var playerMove by remember { mutableStateOf<Move?>(null) }
     var cpuMove by remember { mutableStateOf<Move?>(null) }
     var message by remember { mutableStateOf("Elige tu jugada") }
+    var playerScore by remember { mutableIntStateOf(0) }
+    var cpuScore by remember { mutableIntStateOf(0) }
 
     fun play(move: Move) {
         playerMove = move
         cpuMove = Move.random()
-        message = when (val result = determineWinner(move, cpuMove!!)) {
-            "Ganas" -> "¡Ganaste! ${move.emoji} vence a ${cpuMove!!.emoji}"
-            "Pierdes" -> "Perdiste. ${cpuMove!!.emoji} vence a ${move.emoji}"
-            else -> "Empate. Ambos eligieron ${move.emoji}"
+        when (determineWinner(move, cpuMove!!)) {
+            "Ganas" -> {
+                playerScore++
+                message = "¡Ganaste! ${move.emoji} vence a ${cpuMove!!.emoji}"
+            }
+            "Pierdes" -> {
+                cpuScore++
+                message = "Perdiste. ${cpuMove!!.emoji} vence a ${move.emoji}"
+            }
+            else -> {
+                message = "Empate. Ambos eligieron ${move.emoji}"
+            }
         }
     }
 
@@ -72,6 +81,19 @@ fun RPScreen() {
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text("Piedra, Papel o Tijera", fontSize = 28.sp)
+
+        // Marcador
+        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Jugador")
+                Text("$playerScore", fontSize = 24.sp)
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("CPU")
+                Text("$cpuScore", fontSize = 24.sp)
+            }
+        }
+
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("Elige tu jugada:")
             Spacer(modifier = Modifier.height(12.dp))
@@ -88,5 +110,11 @@ fun RPScreen() {
         }
 
         Text(message)
+
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(onClick = { playerScore = 0; cpuScore = 0; playerMove = null; cpuMove = null; message = "Reiniciado" }) {
+                Text("Reiniciar")
+            }
+        }
     }
 }
