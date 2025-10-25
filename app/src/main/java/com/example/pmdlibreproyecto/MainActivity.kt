@@ -39,11 +39,30 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun determineWinner(player: Move, cpu: Move): String {
+    if (player == cpu) return "Empate"
+    return when (player) {
+        Move.ROCK -> if (cpu == Move.SCISSORS) "Ganas" else "Pierdes"
+        Move.PAPER -> if (cpu == Move.ROCK) "Ganas" else "Pierdes"
+        Move.SCISSORS -> if (cpu == Move.PAPER) "Ganas" else "Pierdes"
+    }
+}
+
 @Composable
 fun RPScreen() {
     var playerMove by remember { mutableStateOf<Move?>(null) }
     var cpuMove by remember { mutableStateOf<Move?>(null) }
     var message by remember { mutableStateOf("Elige tu jugada") }
+
+    fun play(move: Move) {
+        playerMove = move
+        cpuMove = Move.random()
+        message = when (val result = determineWinner(move, cpuMove!!)) {
+            "Ganas" -> "¡Ganaste! ${move.emoji} vence a ${cpuMove!!.emoji}"
+            "Pierdes" -> "Perdiste. ${cpuMove!!.emoji} vence a ${move.emoji}"
+            else -> "Empate. Ambos eligieron ${move.emoji}"
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -57,9 +76,9 @@ fun RPScreen() {
             Text("Elige tu jugada:")
             Spacer(modifier = Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = { playerMove = Move.ROCK; cpuMove = Move.random(); message = "Has elegido ${Move.ROCK.label}" }) { Text("✊ Piedra") }
-                Button(onClick = { playerMove = Move.PAPER; cpuMove = Move.random(); message = "Has elegido ${Move.PAPER.label}" }) { Text("✋ Papel") }
-                Button(onClick = { playerMove = Move.SCISSORS; cpuMove = Move.random(); message = "Has elegido ${Move.SCISSORS.label}" }) { Text("✌️ Tijera") }
+                Button(onClick = { play(Move.ROCK) }) { Text("✊ Piedra") }
+                Button(onClick = { play(Move.PAPER) }) { Text("✋ Papel") }
+                Button(onClick = { play(Move.SCISSORS) }) { Text("✌️ Tijera") }
             }
         }
 
